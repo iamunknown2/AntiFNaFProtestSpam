@@ -54,20 +54,23 @@ function spamtext(text)
 	var indexFNaF = search(lowtext, "fnaf");
 	var indexFaNF = search(lowtext, "fanf");
 	var inindexlist = false;
-	for (i in indexlist)
+	for (i=0;i<indexlist.length;i++)
 	{
-		isinindexlist = isinindexlist || (search(lowtext, indexlist[i]) !== -1); // This will tell if any of the strings in indexlist exist in the stripped version of the string
+		if (search(lowtext, indexlist[i]) !== -1);{
+			inindexlist = true;
+		} // This will tell if any of the strings in indexlist exist in the stripped version of the string
 	}
 	var containsFNaF = indexFNaF !== -1 || indexFaNF !== -1;
-	var relatedspam = isindexlist && containsFNaF;
+	var relatedspam = inindexlist && containsFNaF;
 	var immature = false;
+	isspam = false
 	if (maturity(text) < 90)
 	{
 		immature = true;
+		if (relatedspam)
+		{
+			isspam = true;
+		}
 	}
-	isspam = false;
-	if (immature && relatedspam)
-	{
-		isspam = true;
-	}
+	return isspam;
 }
