@@ -31,13 +31,18 @@ function occur(string, character)
 
 function maturity(text)
 {
+	var penalty = 0;
 	var upLetters = uppercaseLetters(text);
-	// Above code is for determining the amount of capitals
+	if (upLetters == 0)
+	{
+		penalty += 0.15; // No caps counts as immaturity
+	}
+	// Above code is for determining the amount of capitals + adding a penalty for no caps
 	var exclaMarks = occur(text, "!");
 	var questMarks = occur(text, "?");
 	var badMarks = exclaMarks + questMarks;
 	// Above code is for determining the amount of "bad" marks
-	var maturityRatio = (upLetters + badMarks) / text.length; // The amount of "bad" characters per character
+	var maturityRatio = ((upLetters + badMarks) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
 	var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
 	return maturity;
 }
@@ -55,4 +60,14 @@ function spamtext(text)
 	}
 	var containsFNaF = indexFNaF !== -1 || indexFaNF !== -1;
 	var relatedspam = isindexlist && containsFNaF;
+	var immature = false;
+	if (maturity(text) < 90)
+	{
+		immature = true;
+	}
+	isspam = false;
+	if (immature && relatedspam)
+	{
+		isspam = true;
+	}
 }
