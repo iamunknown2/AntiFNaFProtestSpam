@@ -8,7 +8,7 @@ function uppercaseLetters(string)
 	var upamount = 0;
 	for (var i = 0; i < string.length; i++)
 	{
-		if (string[i].toUpperCase() == string[i] && string[i].match(/[a-z]/i))
+		if (string[i].toUpperCase() == string[i] && (string[i].match(/[a-z]/i) != null))
 		{
 			upamount += 1;
 		}
