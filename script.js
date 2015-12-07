@@ -56,10 +56,10 @@ function spamtext(text)
 	var inindexlist = false;
 	for (i in indexlist)
 	{
-		isinindexlist = isinindexlist || (search(lowtext, indexlist[i]) !== -1); // This will tell if any of the strings in indexlist exist in the stripped version of the string
+		inindexlist = inindexlist || (search(lowtext, indexlist[i]) !== -1); // This will tell if any of the strings in indexlist exist in the stripped version of the string
 	}
 	var containsFNaF = indexFNaF !== -1 || indexFaNF !== -1;
-	var relatedspam = isindexlist && containsFNaF;
+	var relatedspam = inindexlist && containsFNaF;
 	var immature = false;
 	if (maturity(text) < 90)
 	{
