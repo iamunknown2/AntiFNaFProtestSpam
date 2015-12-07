@@ -51,14 +51,32 @@ function occur(string, character)
 	return charamount;
 }
 
+function isNoRepeat(character)
+{
+	return character == "!" || character == "?";
+}
+
+function repeatPunc(string)
+{
+	var streak = 0;
+	var repeatPenalty = 0;
+	for (var i = 1; i < string.length; i++)
+	{
+		if (isNoRepeat(string[i]) && isNoRepeat(string[i - 1]))
+		{
+			streak += 1;
+			repeatPenalty += streak;
+		}
+	}
+	return repeatPenalty;
+}
+
 function maturity(text)
 {
 	var penalty = 0;
 	var badCase = badCases(text);
 	// Above code is for determining the amount of capitals
-	var exclaMarks = occur(text, "!");
-	var questMarks = occur(text, "?");
-	var badMarks = exclaMarks + questMarks;
+	var badPunc = repeatPunc(text);
 	// Above code is for determining the amount of "bad" marks
 	if (wotsize(text) > 400)
 	{
@@ -77,7 +95,7 @@ function maturity(text)
 		}
 	}
 	// Above code is for adding penalties for phrases
-	var maturityRatio = 1 - ((badCase + badMarks) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
+	var maturityRatio = 1 - ((badCase + badPunc - penalty) / text.length); // The amount of "bad" characters per character - penalty deductions
 	var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
 	if (maturity < 0)
 	{
@@ -99,7 +117,7 @@ function spamtext(text)
 	var indexFNaF = search(strippedText, "fnaf"); // Detect if the phrase "fnaf" is inside
 	var inindexlist = false;
 	var containsFNaF = indexFNaF !== -1;
-	var mature = maturity(text) >= 90;
+	var mature = maturity(text) >= 85;
 	var isspam = !clear && containsFNaF;
 	return isspam;
 }
