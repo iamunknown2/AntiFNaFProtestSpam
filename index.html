@@ -1,12 +1,14 @@
 <!DOCTYPE HTML>
 <head>
 	<script src="./script.js"></script>
+	<script>
+		setInterval(html_maturity, 10);
+	</script>
 	<link rel="stylesheet" type="text/css" href="./style.css"></link>
 </head>
 <body>
 	<p>Enter your post and click the "Test" button to test its maturity (in a percentage):</p>
-	<textarea id="text"></textarea>
+	<textarea id="text" rows="4"></textarea>
 	<br>
-	<button onclick="html_maturity()">Test</button>
 	<div id="score"></div>
 </body>

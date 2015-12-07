@@ -115,20 +115,27 @@ function maturity(text)
 		}
 	}
 	// Above code is for adding penalties for phrases
-	var maturityRatio = 1 - ((badCase + badPunc) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
-	var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
-	if (maturity < 0)
+	if (text.length !== 0)
 	{
-		maturity = 0;
+		var maturityRatio = 1 - ((badCase + badPunc) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
+		var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
+		if (maturity < 0)
+		{
+			maturity = 0;
+		}
+		return Math.round(maturity).toString() + "%";
 	}
-	return Math.round(maturity);
+	else
+	{
+		return "Enter some text!";
+	}
 }
 
 function html_maturity()
 {
 	var text = document.getElementById("text").value;
 	var score = document.getElementById("score");
-	score.innerHTML = maturity(text).toString() + "%";
+	score.innerHTML = maturity(text);
 }
 
 function spamtext(text)
