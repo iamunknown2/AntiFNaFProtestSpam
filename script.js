@@ -25,7 +25,7 @@ function badCases(string)
 	{
 		var character = string[i];
 		var upException = puncList.indexOf(string[i - 1]) !== -1;
-		var upNecessity = necPuncList.indexOf(string[i - 1]) !== -1
+		var upNecessity = necPuncList.indexOf(string[i - 1]) !== -1;
 		if (character.toUpperCase() == character && character.match(/^[A-z]+$/) && !upException) // Exempts proper use of capitalization
 		{
 			badUpAmount += 1;
@@ -67,6 +67,10 @@ function repeatPunc(string)
 			streak += 1;
 			repeatPenalty += streak;
 		}
+		else
+		{
+			streak = 0;
+		}
 	}
 	return repeatPenalty;
 }
@@ -74,16 +78,17 @@ function repeatPunc(string)
 function maturity(text)
 {
 	var penalty = 0;
-	var badCase = badCases(text);
-	// Above code is for determining the amount of capitals
-	var badPunc = repeatPunc(text);
+	var strippedText = text.toLowerCase().replace(" ", ""); // Converts all to lowercase, then removes all spaces
+	var semiStrippedText = text.replace(" ", "");
+	var badCase = badCases(semiStrippedText);
+	// Above code is for determining the amount of unnecessary capitals and neglected but necessary capitals
+	var badPunc = repeatPunc(semiStrippedText);
 	// Above code is for determining the amount of "bad" marks
 	if (wotsize(text) > 400)
 	{
 		penalty += 0.2; // More than 400 characters/paragraph is too much
 	}
 	// Above code is for adding penalty for wall of text
-	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
 	var indexlist = ["ban", "takedown", "takesdown", "fightfor", "ihate"];
 	for (var i = 0; i < indexlist.length; i++)
 	{
@@ -95,7 +100,7 @@ function maturity(text)
 		}
 	}
 	// Above code is for adding penalties for phrases
-	var maturityRatio = 1 - ((badCase + badPunc - penalty) / text.length); // The amount of "bad" characters per character - penalty deductions
+	var maturityRatio = 1 - ((badCase + badPunc) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
 	var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
 	if (maturity < 0)
 	{
