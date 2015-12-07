@@ -39,6 +39,25 @@ function badCases(string)
 	return badUpAmount + badLowAmount;
 }
 
+function repeatLetters(string)
+{
+	var repeatPenalty = 0;
+	var streak = 0;
+	for (var i = 3; i < string.length; i++)
+	{
+		if (string[i] == string[i - 1] && string[i - 1] == string[i - 2] && string[i - 2] == string[i - 3])
+		{
+			streak += 1;
+			repeatPenalty += streak;
+		}
+		else
+		{
+			streak = 0;
+		}
+	}
+	return repeatPenalty;
+}
+
 function occur(string, character)
 {
 	var charamount = 0;
@@ -98,6 +117,7 @@ function maturity(text)
 	var badCase = badCases(text);
 	// Above code is for determining the amount of unnecessary capitals and neglected but necessary capitals
 	var badPunc = badPunctuation(text);
+	var badRepeat = repeatLetters(text);
 	// Above code is for determining the amount of "bad" marks
 	if (wotsize(text) > 400)
 	{
@@ -117,7 +137,7 @@ function maturity(text)
 	// Above code is for adding penalties for phrases
 	if (text.length !== 0)
 	{
-		var maturityRatio = 1 - ((badCase + badPunc) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
+		var maturityRatio = 1 - ((badCase + badPunc + badRepeat) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
 		var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
 		if (maturity < 0)
 		{
