@@ -20,6 +20,7 @@ function badCases(string)
 	var puncList = [".", "!", "?", "'", "\"", ":", ";"];
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
 	var badUpAmount = 0;
+	var badLowAmount = 0;
 	for (var i = 1; i < string.length; i++) // Starting at item 1, since proper punctuation is good.
 	{
 		var character = string[i];
@@ -50,7 +51,7 @@ function occur(string, character)
 	return charamount;
 }
 
-function clarity(text)
+function maturity(text)
 {
 	var penalty = 0;
 	var badCase = badCases(text);
@@ -65,38 +66,40 @@ function clarity(text)
 	}
 	// Above code is for adding penalty for wall of text
 	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
-	var indexlist = ["ban", "takedown", "takesdown", "fightfor" "ihate"];
-	for (i in indexlist)
+	var indexlist = ["ban", "takedown", "takesdown", "fightfor", "ihate"];
+	for (var i = 0; i < indexlist.length; i++)
 	{
-		if (search(strippedText, indexlist[i]) !== -1); // This will tell if any of the strings in indexlist exist in the stripped version of the string
 		{
-			penalty += 0.05;
+			if (search(strippedText, indexlist[i]) !== -1)
+			{
+				penalty += 0.05;
+			}
 		}
 	}
 	// Above code is for adding penalties for phrases
-	var clarityRatio = 1 - ((badCase + badMarks) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
-	var clarity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
-	if (clarity < 0)
+	var maturityRatio = 1 - ((badCase + badMarks) / text.length) - penalty; // The amount of "bad" characters per character - penalty deductions
+	var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
+	if (maturity < 0)
 	{
-		clarity = 0;
+		maturity = 0;
 	}
-	return Math.round(clarity);
+	return Math.round(maturity);
 }
 
-function html_clarity()
+function html_maturity()
 {
 	var text = document.getElementById("text").value;
 	var score = document.getElementById("score");
-	score.innerHTML = clarity(text).toString() + "%";
+	score.innerHTML = maturity(text).toString() + "%";
 }
 
 function spamtext(text)
 {
-	var indexFNaF = search(lowtext, "fnaf");
-	var indexFaNF = search(lowtext, "fanf");
+	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
+	var indexFNaF = search(strippedText, "fnaf"); // Detect if the phrase "fnaf" is inside
 	var inindexlist = false;
-	var containsFNaF = indexFNaF !== -1 || indexFaNF !== -1;
-	var clear = clarity(text) >= 90;
+	var containsFNaF = indexFNaF !== -1;
+	var mature = maturity(text) >= 90;
 	var isspam = !clear && containsFNaF;
 	return isspam;
 }
