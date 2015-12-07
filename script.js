@@ -17,15 +17,16 @@ function wotsize(string)
 
 function badCases(string)
 {
+	var newString = string.replace(/ /g, "");
 	var puncList = [".", "!", "?", "'", "\"", ":", ";"];
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
 	var badUpAmount = 0;
 	var badLowAmount = 0;
-	for (var i = 1; i < string.length; i++) // Starting at item 1, since proper punctuation is good.
+	for (var i = 1; i < newString.length; i++) // Starting at item 1, since proper punctuation is good.
 	{
-		var character = string[i];
-		var upException = puncList.indexOf(string[i - 1]) !== -1;
-		var upNecessity = necPuncList.indexOf(string[i - 1]) !== -1;
+		var character = newString[i];
+		var upException = puncList.indexOf(newString[i - 1]) !== -1;
+		var upNecessity = necPuncList.indexOf(newString[i - 1]) !== -1;
 		if (character.toUpperCase() == character && character.match(/^[A-z]+$/) && !upException) // Exempts proper use of capitalization
 		{
 			badUpAmount += 1;
@@ -56,13 +57,20 @@ function isNoRepeat(character)
 	return character == "!" || character == "?";
 }
 
-function repeatPunc(string)
+function isNoFollow(character)
 {
+	var noFollowListPunc = [",", ".", "!", "?"];
+	return search(noFollowListPunc, character) !== -1;
+}
+
+function badPunctuation(string)
+{
+	var newString = string.replace(/ /g, "");
 	var streak = 0;
 	var repeatPenalty = 0;
-	for (var i = 1; i < string.length; i++)
+	for (var i = 1; i < newString.length; i++)
 	{
-		if (isNoRepeat(string[i]) && isNoRepeat(string[i - 1]))
+		if (isNoRepeat(newString[i]) && isNoRepeat(newString[i - 1]))
 		{
 			streak += 1;
 			repeatPenalty += streak;
@@ -72,17 +80,24 @@ function repeatPunc(string)
 			streak = 0;
 		}
 	}
-	return repeatPenalty;
+	var followPenalty = 0;
+	for (var i = 0; i < string.length; i++)
+	{
+		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined)
+		{
+			followPenalty += 1;
+		}
+	}
+	return repeatPenalty + followPenalty;
 }
 
 function maturity(text)
 {
 	var penalty = 0;
-	var strippedText = text.toLowerCase().replace(" ", ""); // Converts all to lowercase, then removes all spaces
-	var semiStrippedText = text.replace(" ", "");
-	var badCase = badCases(semiStrippedText);
+	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
+	var badCase = badCases(text);
 	// Above code is for determining the amount of unnecessary capitals and neglected but necessary capitals
-	var badPunc = repeatPunc(semiStrippedText);
+	var badPunc = badPunctuation(text);
 	// Above code is for determining the amount of "bad" marks
 	if (wotsize(text) > 400)
 	{
