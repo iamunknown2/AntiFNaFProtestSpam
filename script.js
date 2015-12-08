@@ -28,7 +28,7 @@ function dummy(length)
 
 function badCases(string)
 {
-	var puncList = [".", "!", "?", "'", "\"", ":", ";"];
+	var puncList = [".", "!", "?", "'", ",", "\"", "“", "”", ":", ";"];
 	var capsExceptions = [
 		"AMA", "GTG", "BRB", "OK", "AFAIK", "AFAICT", "OTOH",
 		"IIRC", "TTYL", "MERRY CHRISTMAS", "HAPPY HOLIDAYS"
