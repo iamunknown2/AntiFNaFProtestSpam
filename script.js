@@ -3,7 +3,7 @@ function search(string, substring)
 	return string.indexOf(substring);
 }
 
-function wotsize(string)
+function wotsize(string) // WOT stands for wall of text
 {
 	if (occur(string, "\n") !== 0)
 	{
@@ -11,15 +11,37 @@ function wotsize(string)
 	}
 	else
 	{
-		return 0;
+		return string.length;
 	}
 }
 
+function dummy(length)
+{
+	var dummyString = "";
+	for (var x = 0; x < length; x++)
+	{
+		dummyString += "/";
+	}
+	return dummyString;
+}
+// Above code will return dummy string with the length specified in the parameter
+
 function badCases(string)
 {
-	var newString = string.replace(/ /g, "");
 	var puncList = [".", "!", "?", "'", "\"", ":", ";"];
+	var capsExceptions = ["AMA", "GTG", "OK", "IIRC", "TTYL"]; // You can get away with all-caps-ing these...
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
+	for (var i = 0; i < capsExceptions.length; i++)
+	{
+		if (search(string, capsExceptions[i]) === 0)
+		{
+			string = string.replace(capsExceptions[i], dummy(capsExceptions[i].length));
+		}
+		var acronyms = new RegExp(capsExceptions[i] + " | " + capsExceptions[i]);
+		string = string.replace(acronyms, dummy(capsExceptions[i].length));
+	// This will replace the strings with equally long "dummies"
+	}
+	newString = string.replace(/ /g, "");
 	var badUpAmount = 0;
 	var badLowAmount = 0;
 	for (var i = 1; i < newString.length; i++) // Starting at item 1, since proper punctuation is good.
@@ -27,32 +49,32 @@ function badCases(string)
 		var character = newString[i];
 		var upException = puncList.indexOf(newString[i - 1]) !== -1;
 		var upNecessity = necPuncList.indexOf(newString[i - 1]) !== -1;
-		if (character.toUpperCase() == character && character.match(/^[A-z]+$/) && !upException) // Exempts proper use of capitalization
+		if (character.toUpperCase() == character && character.match(/^[A-z]+$/) && !upException) // If caps + caps are not warranted
 		{
 			badUpAmount += 1;
 		}
-		else if (character.toLowerCase() == character && character.match(/^[A-z]+$/) && upNecessity)
+		else if (character.toLowerCase() == character && character.match(/^[A-z]+$/) && upNecessity) // If caps are necessary + no caps
 		{
 			badLowAmount += 1;
 		}
 	}
-	return badUpAmount + badLowAmount;
+	return badUpAmount + badLowAmount; // Return total of "bad" amounts.
 }
 
 function repeatLetters(string)
 {
 	var repeatPenalty = 0;
-	var streak = 0;
+	var streak = 0; // The more repeat letters you have in a row, the bigger the penalty will be per letter.
 	for (var i = 3; i < string.length; i++)
 	{
-		if (string[i] == string[i - 1] && string[i - 1] == string[i - 2] && string[i - 2] == string[i - 3])
+		if (string[i] == string[i - 1] && string[i - 1] == string[i - 2] && string[i - 2] == string[i - 3] && (string[i].match(/^[A-z]+$/) || string[i] == "."))
 		{
 			streak += 1;
 			repeatPenalty += streak;
 		}
 		else
 		{
-			streak = 0;
+			streak = 0; // Reset the streak if they stop repeating.
 		}
 	}
 	return repeatPenalty;
@@ -73,7 +95,7 @@ function occur(string, character)
 
 function isNoRepeat(character)
 {
-	return character == "!" || character == "?";
+	return character == "!" || character == "?" || character == " ";
 }
 
 function isNoFollow(character)
@@ -84,12 +106,11 @@ function isNoFollow(character)
 
 function badPunctuation(string)
 {
-	var newString = string.replace(/ /g, "");
 	var streak = 0;
 	var repeatPenalty = 0;
-	for (var i = 1; i < newString.length; i++)
+	for (var i = 1; i < string.length; i++)
 	{
-		if (isNoRepeat(newString[i]) && isNoRepeat(newString[i - 1]))
+		if (isNoRepeat(string[i]) && isNoRepeat(string[i - 1]))
 		{
 			streak += 1;
 			repeatPenalty += streak;
@@ -102,7 +123,7 @@ function badPunctuation(string)
 	var followPenalty = 0;
 	for (var i = 0; i < string.length; i++)
 	{
-		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined)
+		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined && string[i + 1] !== ".")
 		{
 			followPenalty += 1;
 		}
@@ -143,11 +164,7 @@ function maturity(text)
 		{
 			maturity = 0;
 		}
-		return Math.round(maturity).toString() + "%";
-	}
-	else
-	{
-		return "Enter some text!";
+		return Math.round(maturity);
 	}
 }
 
@@ -155,7 +172,34 @@ function html_maturity()
 {
 	var text = document.getElementById("text").value;
 	var score = document.getElementById("score");
-	score.innerHTML = maturity(text);
+	var display = "";
+	if (isNaN(maturity(text)))
+	{
+		display = "Type something into the textbox..."
+	}
+	else
+	{
+		display = maturity(text).toString() + "%";
+	}
+	score.innerHTML = display;
+	var color = "";
+	if (maturity(text) >= 90)
+	{
+		color = "lightgreen";
+	}
+	else if (maturity(text) >= 66)
+	{
+		color = "yellow";
+	}
+	else if (!isNaN(maturity(text)))
+	{
+		color = "red";
+	}
+	else
+	{
+		color = "lightblue";
+	}
+	document.body.style.background = color;
 }
 
 function spamtext(text)
