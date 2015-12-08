@@ -30,8 +30,8 @@ function badCases(string)
 {
 	var puncList = [".", "!", "?", "'", ",", "\"", "“", "”", ":", ";"];
 	var capsExceptions = [
-		"AMA", "GTG", "BRB", "OK", "AFAIK", "AFAICT", "OTOH",
-		"IIRC", "TTYL", "MERRY CHRISTMAS", "HAPPY HOLIDAYS"
+		"AMA", "GTG", "BRB", "OK", "AFAIK", "AFAICT", "OTOH", "FTW", "LOL"
+		"IIRC", "TTYL", "BTW", "FTFY", "IYTAI", "MERRY CHRISTMAS", "HAPPY HOLIDAYS"
 	]; // You can get away with all-caps-ing these...
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
 	for (var i = 0; i < capsExceptions.length; i++)
