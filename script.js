@@ -95,7 +95,7 @@ function occur(string, character)
 
 function isNoRepeat(character)
 {
-	return character == "!" || character == "?" || character == " ";
+	return character == "!" || character == "?" || character == " "; // These are the characters that should not be repeated consecutively
 }
 
 function isNoFollow(character)
@@ -106,7 +106,7 @@ function isNoFollow(character)
 
 function badPunctuation(string)
 {
-	var streak = 0;
+	var streak = 0; // The more consecutive punctuation marks, the bigger the penalty
 	var repeatPenalty = 0;
 	for (var i = 1; i < string.length; i++)
 	{
@@ -117,13 +117,13 @@ function badPunctuation(string)
 		}
 		else
 		{
-			streak = 0;
+			streak = 0; // Resets the streak if the consecutive punctuation marks stop
 		}
 	}
 	var followPenalty = 0;
 	for (var i = 0; i < string.length; i++)
 	{
-		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined && string[i + 1] !== ".")
+		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined && string[i + 1] !== ".") // If the punctuation shouldn't be followed immediately without a space and if the next character is not a dot (to prevent from penalizing ellipsises
 		{
 			followPenalty += 1;
 		}
