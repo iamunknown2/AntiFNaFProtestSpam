@@ -249,3 +249,13 @@ function html_maturity()
 	}
 	document.body.style.background = color;
 }
+function spamtext(text)
+{
+	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
+	var indexFNaF = search(strippedText, "fnaf"); // Detect if the phrase "fnaf" is inside
+	var inindexlist = false;
+	var containsFNaF = indexFNaF !== -1;
+	var mature = maturity(text) >= 85;
+	var isspam = !clear && containsFNaF;
+	return isspam;
+}
