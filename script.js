@@ -54,7 +54,7 @@ function badCases(string)
 	var capsExceptions = ["AFAICT", "AFAIK", "AMA", "BRB", "BTW", "FTFY", "FTW", "GTG", "HAPPY HALLOWEEN", "HAPPY HOLIDAYS", "IIRC", "IYTAI", "LOL", "MERRY CHRISTMAS", "OK", "OTOH", "TIL", "TTYL"]; // You can get away with all-caps-ing these...
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
 	var exceptString = exception(string, capsExceptions);
-	var newString = exceptString.replace(/ /g, "");
+	var newString = exceptString.replace(/ |\*/g, "");
 	var badUpAmount = 0;
 	var badLowAmount = 0;
 	for (var i = 1; i < newString.length; i++) // Starting at item 1, since proper punctuation is good.
@@ -117,10 +117,10 @@ function spam(string)
 {
 	var spam = 0;
 	var stringList = string.split(" ");
-	var spamPunctuation = [";", ",", ".", "[", "]", "\\", "\"", "'", "`", "-", "="];
-	var hasSpamSymbols = search(spamPunctuation, string) === -1;
+	var spamPunctuation = [";", ",", ".", "[", "]"];
 	for (var i = 0; i < stringList.length; i++)
 	{
+		var spamSymbols = string.search(/;|,|.|[|]/g, spamPunctuation[i]);
 		for (var x = stringList[i].length - 1; x >= 0; x--)
 		{
 			console.log(x);
@@ -133,7 +133,7 @@ function spam(string)
 				break; // Once the consecutive dots stop, break from the loop; leave the judgement of overly long ellipsises to the repeatLetter function
 			}
 		}
-		if (stringList[i].length > 10 && hasSpamSymbols && stringList[i].toLowerCase() != "supercalifragilisticexpianadocious" && stringList[i][stringList[i].length - 1] != ".")
+		if (stringList[i].length > 10 && spamSymbols >= 10 && stringList[i].toLowerCase() != "supercalifragilisticexpianadocious" && stringList[i][stringList[i].length - 1] != ".")
 		{
 			spam += stringList[i].length;
 		}
