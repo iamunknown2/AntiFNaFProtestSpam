@@ -80,16 +80,16 @@ function repeatLetters(string)
 	var repeatExceptions = ["aaaaba", "illlit", "gillless", "wallless", "bulllike", "hilllike", "aaadonta", "willless", "shellless", "skillless", "skulllike", "goddessship", "hostessship", "willlessness", "headmistressship"];
 	var newString = exception(string.toLowerCase(), repeatExceptions);
 	var streak = 0; // The more repeat letters you have in a row, the bigger the penalty will be per letter.
-	for (var i = 3; i < string.length; i++)
+	for (var i = 2; i < string.length; i++)
 	{
-		if (newString[i] == newString[i - 1] && newString[i - 1] == newString[i - 2] && (newString[i].match(/^[A-z]+$/) || newString[i] == "."))
+		if (newString[i] == newString[i - 1] && newString[i - 1] == newString[i - 2] && (newString[i].match(/^[A-z]+$/) || (newString[i] == "." && newString[i - 2] == newString[i - 3]))) // The last && is to allow 3-dot-ellipsises to escape penalization
 		{
 			streak += 1;
 			repeatPenalty += streak;
 		}
 		else
 		{
-			streak = 0; // Reset the streak if they stop repeating.
+			streak = 0; // Reset the streak if they stop repeating
 		}
 	}
 	return repeatPenalty;
@@ -113,12 +113,6 @@ function isNoRepeat(character)
 	return character == "!" || character == "?" || character == " "; // These are the characters that should not be repeated consecutively
 }
 
-function isNoFollow(character)
-{
-	var noFollowListPunc = [",", ".", "!", "?"];
-	return search(noFollowListPunc, character) !== -1;
-}
-
 function spam(string)
 {
 	var spam = 0;
@@ -133,6 +127,12 @@ function spam(string)
 		}
 	}
 	return spam;
+}
+
+function isNoFollow(character)
+{
+	var noFollowListPunc = [",", ".", "!", "?"];
+	return search(noFollowListPunc, character) !== -1;
 }
 
 function badPunctuation(string)
@@ -154,7 +154,7 @@ function badPunctuation(string)
 	var followPenalty = 0;
 	for (var i = 0; i < string.length; i++)
 	{
-		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined && string[i + 1] !== ".") // If the punctuation shouldn't be followed immediately without a space and if the next character is not a dot (to prevent from penalizing ellipsises
+		if (isNoFollow(string[i]) && string[i + 1] !== " " && string[i + 1] !== undefined && string[i + 1] !== ".") // If the punctuation shouldn't be followed immediately without a space and if the next character is not a dot (to prevent from penalizing ellipsises)
 		{
 			followPenalty += 1;
 		}
@@ -236,6 +236,11 @@ function html_maturity()
 		color = "lightblue";
 	}
 	document.body.style.background = color;
+}
+
+function delay_maturity()
+{
+	setTimeout(html_maturity, 1);
 }
 
 function spamtext(text)
