@@ -249,6 +249,7 @@ function html_maturity()
 	}
 	document.body.style.background = color;
 }
+
 function spamtext(text)
 {
 	var strippedText = text.toLowerCase().replace(/ /g, ""); // Converts all to lowercase, then removes all spaces
