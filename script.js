@@ -36,10 +36,6 @@ function exception(string, exceptionList)
 		}
 		var partRegex = exceptionList[i] + " | " + exceptionList[i];
 		var regex = new RegExp(partRegex, "g");
-		if (string == "This is a second test")
-		{
-			console.log(dummy(exceptionList[i].length + 1));
-		}
 		var spaceDummy = dummy(exceptionList[i].length + 1);
 		var string = string.replace(regex, spaceDummy);
 		// This will replace the strings with equally long "dummies"
@@ -123,7 +119,6 @@ function spam(string)
 		var spamSymbols = string.search(/;|,|.|[|]/g, spamPunctuation[i]);
 		for (var x = stringList[i].length - 1; x >= 0; x--)
 		{
-			console.log(x);
 			if (stringList[i][x] == ".")
 			{
 				stringList[i] = stringList[i].slice(0, stringList[i].length - 2); // Remove dots from the "eyes" of this function
