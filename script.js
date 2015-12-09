@@ -30,18 +30,14 @@ function exception(string, exceptionList)
 {
 	for (var i = 0; i < exceptionList.length; i++)
 	{
-		if (string.search(exceptionList[i]) === 0)
+		if (string.search(exceptionList[i]) === 0) // If string at beginning or at the end.
 		{
-			string = string.replace(exceptionList[i], dummy(exceptionList[i].length));
+			var string = string.replace(exceptionList[i], dummy(exceptionList[i].length));
 		}
 		var partRegex = exceptionList[i] + " | " + exceptionList[i];
 		var regex = new RegExp(partRegex, "g");
-		if (string == "This is a second test")
-		{
-			console.log(dummy(exceptionList[i].length + 1));
-		}
 		var spaceDummy = dummy(exceptionList[i].length + 1);
-		var string = string.replace(regex, spaceDummy);
+		string = string.replace(regex, spaceDummy);
 		// This will replace the strings with equally long "dummies"
 	}
 	return string;
@@ -118,12 +114,15 @@ function spam(string)
 	var spam = 0;
 	var stringList = string.split(" ");
 	var spamPunctuation = [";", ",", ".", "[", "]", "\\", "\"", "'", "`", "-", "="];
-	var hasSpamSymbols = search(spamPunctuation, string) === -1;
 	for (var i = 0; i < stringList.length; i++)
 	{
+		var hasSpamSymbols = false;
+		for (var x = 0; x < stringList[i].length; x++)
+		{
+			hasSpamSymbols = hasSpamSymbols || search(spamPunctuation, stringList[i][x]) !== -1;
+		}
 		for (var x = stringList[i].length - 1; x >= 0; x--)
 		{
-			console.log(x);
 			if (stringList[i][x] == ".")
 			{
 				stringList[i] = stringList[i].slice(0, stringList[i].length - 2); // Remove dots from the "eyes" of this function
@@ -176,13 +175,13 @@ function badPunctuation(string)
 
 function insults(string)
 {
-	var strippedString = string.toLowerCase().replace(/ /g, "");
+	var strippedString = string.toLowerCase().replace(/ |\?|\!|\.|\,/g, ""); // Strip punctuation marks & spaces away
 	var insultPenalty = 0;
 	var indexList = ["ban", "takedown", "takesdown", "fightfor", "ihate", "idiot", "stupid", "asdf", "hjkl"];
 	for (var i = 0; i < indexList.length; i++)
 	{
 		var insults = new RegExp(indexList[i], "g");
-		if (strippedString.match(insults) !== null)
+		if (strippedString.match(insults) !== null) // If the amount of insults aren't 0
 		{
 			insultPenalty += strippedString.match(insults).length;
 		}
@@ -248,6 +247,11 @@ function html_maturity()
 		color = "lightblue";
 	}
 	document.body.style.background = color;
+}
+
+function delay_maturity()
+{
+	setTimeout(html_maturity, 1);
 }
 
 function spamtext(text)
