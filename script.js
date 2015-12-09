@@ -26,22 +26,35 @@ function dummy(length)
 }
 // Above code will return dummy string with the length specified in the parameter
 
+function exception(string, exceptionList)
+{
+	for (var i = 0; i < exceptionList.length; i++)
+	{
+		if (string.search(exceptionList[i]) === 0)
+		{
+			string = string.replace(exceptionList[i], dummy(exceptionList[i].length));
+		}
+		var partRegex = exceptionList[i] + " | " + exceptionList[i];
+		var regex = new RegExp(partRegex, "g");
+		if (string == "This is a second test")
+		{
+			console.log(dummy(exceptionList[i].length + 1));
+		}
+		var spaceDummy = dummy(exceptionList[i].length + 1);
+		var string = string.replace(regex, spaceDummy);
+		// This will replace the strings with equally long "dummies"
+	}
+	return string;
+}
+// Above code will return newString with (sub)strings on exceptionList replaced with dummy strings
+
 function badCases(string)
 {
 	var puncList = [".", "!", "?", "'", ",", "\"", "“", "”", ":", ";"];
 	var capsExceptions = ["AMA", "GTG", "BRB", "OK", "AFAIK", "AFAICT", "OTOH", "FTW", "LOL", "IIRC", "TTYL", "BTW", "FTFY", "IYTAI", "MERRY CHRISTMAS", "HAPPY HOLIDAYS"]; // You can get away with all-caps-ing these...
 	var necPuncList = [".", "!", "?"]; // You MUST put a capital after these punctuation marks.
-	for (var i = 0; i < capsExceptions.length; i++)
-	{
-		if (search(string, capsExceptions[i]) === 0)
-		{
-			string = string.replace(capsExceptions[i], dummy(capsExceptions[i].length));
-		}
-		var acronyms = new RegExp(capsExceptions[i] + " | " + capsExceptions[i]);
-		string = string.replace(acronyms, dummy(capsExceptions[i].length));
-	// This will replace the strings with equally long "dummies"
-	}
-	newString = string.replace(/ /g, "");
+	var exceptString = exception(string, capsExceptions);
+	var newString = exceptString.replace(/ /g, "");
 	var badUpAmount = 0;
 	var badLowAmount = 0;
 	for (var i = 1; i < newString.length; i++) // Starting at item 1, since proper punctuation is good.
@@ -64,19 +77,9 @@ function badCases(string)
 function repeatLetters(string)
 {
 	var repeatPenalty = 0;
-	var newString = string.toLowerCase();
-	var streak = 0; // The more repeat letters you have in a row, the bigger the penalty will be per letter.
 	var repeatExceptions = ["aaaaba", "illlit", "gillless", "wallless", "bulllike", "hilllike", "aaadonta", "willless", "shellless", "skillless", "skulllike", "goddessship", "hostessship", "willlessness", "headmistressship"];
-	for (var i = 0; i < repeatExceptions.length; i++)
-	{
-		if (search(newString, repeatExceptions[i]) === 0)
-		{
-			newString = newString.replace(repeatExceptions[i], dummy(repeatExceptions[i].length));
-		}
-		var acronyms = new RegExp(repeatExceptions[i] + " | " + repeatExceptions[i]);
-		newString = newString.replace(acronyms, dummy(repeatExceptions[i].length));
-	// This will replace the strings with equally long "dummies"
-	}
+	var newString = exception(string.toLowerCase(), repeatExceptions);
+	var streak = 0; // The more repeat letters you have in a row, the bigger the penalty will be per letter.
 	for (var i = 3; i < string.length; i++)
 	{
 		if (newString[i] == newString[i - 1] && newString[i - 1] == newString[i - 2] && (newString[i].match(/^[A-z]+$/) || newString[i] == "."))
@@ -114,6 +117,22 @@ function isNoFollow(character)
 {
 	var noFollowListPunc = [",", ".", "!", "?"];
 	return search(noFollowListPunc, character) !== -1;
+}
+
+function spam(string)
+{
+	var spam = 0;
+	var stringList = string.split(" ");
+	var spamPunctuation = [";", ",", ".", "[", "]", "\\", "\"", "'", "`", "-", "="];
+	var hasSpamSymbols = search(spamPunctuation, string) === -1;
+	for (var i = 0; i < stringList.length; i++)
+	{
+		if (stringList[i].length > 10 && hasSpamSymbols && stringList[i].toLowerCase() != "supercalifragilisticexpianadocious")
+		{
+			spam += stringList[i].length;
+		}
+	}
+	return spam;
 }
 
 function badPunctuation(string)
@@ -166,6 +185,7 @@ function maturity(text)
 	var badPunc = badPunctuation(text);
 	var badRepeat = repeatLetters(text);
 	var badManners = insults(text);
+	var badString = spam(text);
 	if (wotsize(text) > 400)
 	{
 		wotPenalty += 0.2 * Math.floor((wotsize(text) - 400) / 200); // More than 400 characters/paragraph is too much
@@ -174,7 +194,7 @@ function maturity(text)
 	// Above code is for adding penalties for phrases
 	if (text.length !== 0)
 	{
-		var maturityRatio = 1 - ((badCase + badPunc + badRepeat + (badManners * 10) /* badManners is worst than the rest of these */) / text.length) - wotPenalty; // The amount of "bad" characters per character - penalty deductions
+		var maturityRatio = 1 - ((badCase + badPunc + badRepeat + (badManners * 10) /* badManners is worst than the rest of these */) / text.length) - (wotPenalty + (spam(text) / 10)); // The amount of "bad" characters per character - penalty deductions
 		var maturity = maturityRatio * 100; // The maturity rating is a percentage of the maturity ratio
 		if (maturity < 0)
 		{
